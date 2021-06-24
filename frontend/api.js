@@ -7,6 +7,11 @@ export default class APIHandler {
         category: "ongoing"
       },
       {
+        id: "cd",
+        title: "custom",
+        category: "done"
+      },
+      {
         id: "def456",
         title: "데이터베이스 삭제하기",
         category: "todo"
@@ -16,6 +21,10 @@ export default class APIHandler {
 
   // TODO: 전체 카드 객체 리스트 반환. 없으면 NULL
   async getCards() {
+    let request = new APIRequest("get","cards");
+    let response = APIProcessor(request);
+    console.log("response : " + response);
+
     if (this.dummyData.length === 0) {
       return null;
     } else {
@@ -53,6 +62,30 @@ export default class APIHandler {
     console.log(this.dummyData);
   }
 
-  // TODO: API 요청 컨테이너. Method, Path, Body 속성
-  // TODO: API 호출 함수
+
+}
+
+const HOST = "https://b0mywe6xtd.execute-api.ap-northeast-2.amazonaws.com/prod/";
+// TODO: API 요청 컨테이너. Method, Path, Body 속성
+class APIRequest {
+  constructor(method, path, body = null) {
+    this.method = method;
+    this.url = HOST + path;
+    this.body = body;
+  }
+}
+// TODO: API 호출 함수
+const APIProcessor = async request => {
+  const response = await fetch(request.url, {
+    method: request.method,
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    body: request.body ? JSON.stringify(request.body) : null
+  });
+  console.log(response);
+  return response;
 }
